@@ -1,9 +1,5 @@
 CREATE DATABASE Data_Pelanggan;
 
-INSERT INTO users VALUES{
-    (1,'M. Ilham Ramadhan', 'ramadhanmilham354@gmail.com');
-    (2,'ramadhanmilham', 'killingtomore007@gmail.com');
-}
 
 
 CREATE TABLE users(
@@ -21,4 +17,5 @@ CREATE TABLE items(
 CREATE TABLE orders(
     id SERIAL PRIMARY KEY,
     items_orders VARCHAR(100),
+    Jumlah_orders INT NOT NULL
 )
