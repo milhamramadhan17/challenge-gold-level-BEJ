@@ -3,5 +3,24 @@
     "express": "^4.18.1",
     "nodemon": "^2.0.16",
     "pg": "^8.7.3"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "challenge-gold-level-bej",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milhamramadhan17/challenge-gold-level-BEJ.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/milhamramadhan17/challenge-gold-level-BEJ/issues"
+  },
+  "homepage": "https://github.com/milhamramadhan17/challenge-gold-level-BEJ#readme"
 }
