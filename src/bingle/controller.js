@@ -1,5 +1,4 @@
 const pool = require('../db');
-const res = require("express/lib/response");
 
 const getUsers = (req, res) => {
     pool.query("SELECT * FROM users", (err, results) => {
