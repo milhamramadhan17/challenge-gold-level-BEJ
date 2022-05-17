@@ -20,6 +20,24 @@ const getUsersById = (req, res) => {
     });
 };
 
+const addUsers = (req, res) => {
+    const {username, email} = req.body;
+
+    // chech if email exists
+    pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
+        if (results.rows.length) {
+            res.send('Email already exists.');
+        }
+
+        //add users to database
+        pool.query(queriesUsers.addUsers,
+            [username, email], (err, results) => {
+            if (err) throw err;
+            res.status(201).send("User Created Successfully!");
+        })
+    });
+};
+
 
 
 
@@ -56,6 +74,7 @@ const getOrders = (req, res) => {
 
 module.exports = {
     getUsers,
+    addUsers,
     getUsersById,
     getItems,
     getItemsById,
