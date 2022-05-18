@@ -59,6 +59,24 @@ const getItemsById = (req, res) => {
     });
 };
 
+const addItems = (req, res) => {
+    const{nama_items, harga_items} = req.body;
+
+    // chech if items exists
+    pool.query(queriesItems.checkItemsExists, [nama_items], (err, results) => {
+        if (results.rows.length) {
+            res.send('Item already exists.');
+        };
+
+        //add users to database
+        pool.query(queriesItems.addItems,
+            [nama_items, harga_items], (err, results) => {
+            if (err) throw err;
+            res.status(201).send("User Created Successfully!");
+        })
+    });
+};
+
 
 
 
@@ -78,5 +96,6 @@ module.exports = {
     getUsersById,
     getItems,
     getItemsById,
+    addItems,
     getOrders
 }
