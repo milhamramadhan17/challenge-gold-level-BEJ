@@ -10,7 +10,7 @@ const port = 3000;
 app.use(express.json());
 
 app.get("/", (req,res) => {
-    res.send("Hellow World!");
+    res.send("Aku anak Indonesia!!!");
 })
 
 app.use('/api/v1/user', usersRoutes);
