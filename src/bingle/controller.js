@@ -87,7 +87,27 @@ const getOrders = (req, res) => {
         if(err) throw err;
         res.status(200).json(results.rows);
 
-    })
+    });
+}
+
+const getOrdersById = (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results.rows);
+    });
+    
+}
+
+
+const addOrder = (req, res) => {
+    const{items_orders, jumlah_orders} = req.body;
+    
+    pool.query(queriesOrders.addOrder,
+        [items_orders, jumlah_orders], (err, results) => {
+        if (err) throw err;
+        res.status(201).send("Order Created Successfully!");
+        })
 }
 
 module.exports = {
@@ -97,5 +117,7 @@ module.exports = {
     getItems,
     getItemsById,
     addItems,
-    getOrders
+    getOrders,
+    getOrdersById,
+    addOrder,
 }
