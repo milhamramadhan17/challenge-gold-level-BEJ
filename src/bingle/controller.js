@@ -32,9 +32,25 @@ const addUsers = (req, res) => {
         //add users to database
         pool.query(queriesUsers.addUsers,
             [username, email], (err, results) => {
+                if (err) throw err;
+                res.status(201).send("User Created Successfully!");
+            })
+        });
+};
+        
+const removeUser = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    pool.query(queriesUsers.removeUser, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        if(noUserFound) {
+            res.send("User does not exist in the database!")
+        }
+
+        pool.query(queriesUsers.removeUser, [id], (err, results) => {
             if (err) throw err;
-            res.status(201).send("User Created Successfully!");
-        })
+            res.status(200).send("User removed successfully.");
+        });
     });
 };
 
@@ -114,6 +130,7 @@ module.exports = {
     getUsers,
     addUsers,
     getUsersById,
+    removeUser,
     getItems,
     getItemsById,
     addItems,
