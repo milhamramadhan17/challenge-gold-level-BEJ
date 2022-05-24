@@ -7,6 +7,14 @@ const app = express();
 const port = 3000;
 
 // middleware
+
+const longger = (req, res, next) => {
+    console.log(req.method, req.url);
+    next();
+}
+
+app.use(longger);
+
 app.use(express.json());
 
 app.get("/", (req,res) => {

@@ -1,13 +1,13 @@
 const pool = require('../db');
 const queriesUsers = require('./queries/queries.users')
 const queriesItems = require('./queries/queries.items')
-const queriesOrders = require('./queries/queries.orders')
+const queriesOrders = require('./queries/queries.orders');
 
 //user
 const getUsers = (req, res) => {
     pool.query(queriesUsers.getUsers, (err, results) => {
         if(err) throw err;
-        res.status(200).json(results.rows);
+        return res.status(200).json(results.rows);
 
     });
 };
@@ -16,7 +16,7 @@ const getUsersById = (req, res) => {
     const id = parseInt(req.params.id);
     pool.query(queriesUsers.getUsersById, [id], (err, results) => {
         if (err) throw err;
-        res.status(200).json(results.rows);
+        return res.status(200).json(results.rows);
     });
 };
 
@@ -26,14 +26,14 @@ const addUsers = (req, res) => {
     // chech if email exists
     pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
         if (results.rows.length) {
-            res.send('Email already exists.');
+            return res.send('Email already exists.');
         }
 
         //add users to database
         pool.query(queriesUsers.addUsers,
             [username, email], (err, results) => {
                 if (err) throw err;
-                res.status(201).send("User Created Successfully!");
+                return res.status(201).send("User Created Successfully!");
             })
         });
 };
@@ -41,15 +41,36 @@ const addUsers = (req, res) => {
 const removeUser = (req, res) => {
     const id = parseInt(req.params.id);
 
-    pool.query(queriesUsers.removeUser, [id], (err, results) => {
+    pool.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
+        console.log(noUserFound);
         if(noUserFound) {
-            res.send("User does not exist in the database!")
-        }
+            return res.send("User does not exist in the database!");
+        };
 
-        pool.query(queriesUsers.removeUser, [id], (err, results) => {
+        
+        pool.query(queriesUsers.removeUser,
+            [id], (err, results) => {
+            if (err) throw err; 
+            return res.status(203).send("User removed successfully.");
+            
+        });
+    });
+};
+
+const updateUser = (req, res) => {
+    const id = parseInt(req.params.id);
+    const {username} = req.body;
+
+    pool.query(queriesUsers.getUsersById, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        if (noUserFound) {
+            return res.send("User does not exist in database!");
+        };
+
+        pool.query(queriesUsers.updateUser, [username, id], (err, results) => {
             if (err) throw err;
-            res.status(200).send("User removed successfully.");
+            return res.status(200).send("User update successfully.");
         });
     });
 };
@@ -130,10 +151,13 @@ module.exports = {
     getUsers,
     addUsers,
     getUsersById,
+    updateUser,
     removeUser,
+
     getItems,
     getItemsById,
     addItems,
+    
     getOrders,
     getOrdersById,
     addOrder,
