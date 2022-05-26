@@ -70,14 +70,10 @@ const updateUser = (req, res) => {
 
         pool.query(queriesUsers.updateUser, [username, id], (err, results) => {
             if (err) throw err;
-            return res.status(200).send("User update successfully.");
+            return res.status(200).send("User updated successfully.");
         });
     });
 };
-
-
-
-
 
 //items
 const getItems = (req, res) => {
@@ -111,6 +107,56 @@ const addItems = (req, res) => {
             if (err) throw err;
             res.status(201).send("User Created Successfully!");
         })
+    });
+};
+
+const removeItems = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    pool.query(queriesItems.getItemsById, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        console.log(noUserFound);
+        if(noUserFound) {
+            return res.send("Item does not exist in the database!");
+        };
+
+        
+        pool.query(queriesItems.removeItems,
+            [id], (err, results) => {
+            if (err) throw err; 
+            return res.status(203).send("User removed successfully.");
+            
+        });
+    });
+
+};
+
+const updateItems = (req, res) => {
+    const id = parseInt(req.params.id);
+    const {nama_items} = req.body;
+    const {harga_items} = req.body;
+
+    pool.query(queriesItems.getItemsById, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        console.log(noUserFound);
+        if(noUserFound) {
+            return res.send("Item doest not exist in the database!");
+        }
+        if (nama_items){
+            pool.query(queriesItems.updateItems, [nama_items, id], (err, results) => {
+                if(err) throw err;
+                return res.status(200).send("Item updated successfully :D");
+            });
+        } else if(harga_items){
+            pool.query(queriesItems.updateItemsPrice, [harga_items, id], (err, results) => {
+                if(err) throw err;
+                return res.status(200).send("Price updated successfully :D");
+            });
+        }
+
+        
+
+
     });
 };
 
@@ -157,7 +203,9 @@ module.exports = {
     getItems,
     getItemsById,
     addItems,
-    
+    removeItems,
+    updateItems,
+
     getOrders,
     getOrdersById,
     addOrder,
