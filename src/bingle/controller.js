@@ -164,10 +164,6 @@ const updateItems = (req, res) => {
                 return res.status(200).send("Price updated successfully :D");
             });
         }
-
-        
-
-
     });
 };
 
@@ -204,6 +200,54 @@ const addOrder = (req, res) => {
         })
 }
 
+const removeOrder = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        console.log(noUserFound);
+        if(noUserFound) {
+            return res.send("Order does not exist in the database!");
+        };
+
+        
+        pool.query(queriesOrders.removeOrder,
+            [id], (err, results) => {
+            if (err) throw err; 
+            return res.status(203).send("Order removed successfully.");
+            
+        });
+    });
+
+}
+
+const updateOrder = (req, res) => {
+    const id = parseInt(req.params.id);
+    const {items_orders} = req.body;
+    const {jumlah_orders} = req.body;
+
+    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+        const noUserFound = !results.rows.length;
+        console.log(noUserFound);
+        if(noUserFound) {
+            return res.send("Item doest not exist in the database!");
+        }
+        if (items_orders){
+            pool.query(queriesOrders.updateOrder, [items_orders, id], (err, results) => {
+                if(err) throw err;
+                return res.status(200).send("Order updated successfully :D");
+            });
+        } else if(jumlah_orders){
+            pool.query(queriesOrders.updateOrderValue, [jumlah_orders, id], (err, results) => {
+                if(err) throw err;
+                return res.status(200).send("Value order updated successfully :D");
+            });
+        }
+    });
+}
+
+
+
 module.exports = {
     getUsers,
     addUsers,
@@ -220,4 +264,8 @@ module.exports = {
     getOrders,
     getOrdersById,
     addOrder,
+    removeOrder,
+    updateOrder,
+
+
 }
