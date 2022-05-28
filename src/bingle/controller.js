@@ -21,17 +21,17 @@ const getUsersById = (req, res) => {
 };
 
 const addUsers = (req, res) => {
-    const {username, email} = req.body;
+    const {username, password} = req.body;
 
     // chech if email exists
-    pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
+    pool.query(queriesUsers.checkUsernameExists, [username], (err, results) => {
         if (results.rows.length) {
-            return res.send('Email already exists.');
+            return res.send('User Login Successfully.');
         }
 
         //add users to database
         pool.query(queriesUsers.addUsers,
-            [username, email], (err, results) => {
+            [username, password], (err, results) => {
                 if (err) throw err;
                 return res.status(201).send("User Created Successfully!");
             })
@@ -61,7 +61,7 @@ const removeUser = (req, res) => {
 const updateUser = (req, res) => {
     const id = parseInt(req.params.id);
     const {username} = req.body;
-    const {email} = req.body;
+    const {password} = req.body;
 
     pool.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
@@ -72,14 +72,14 @@ const updateUser = (req, res) => {
         if (username) {
             pool.query(queriesUsers.updateUser, [username, id], (err, results) => {
                 if (err) throw err;
-                return res.status(200).send("User updated successfully.");
+                return res.status(200).send("Username updated successfully.");
             }); 
         }
 
-        if (email) {
-            pool.query(queriesUsers.updateEmail, [email, id], (err) => {
+        if (password) {
+            pool.query(queriesUsers.updatePassword, [password, id], (err) => {
                 if (err) throw err;
-                return res.status(200).send("Email updated successfully.");
+                return res.status(200).send("Password updated successfully.");
             })
         }
 
