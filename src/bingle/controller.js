@@ -21,7 +21,7 @@ const getUsersById = (req, res) => {
 };
 
 const addUsers = (req, res) => {
-    const {username, password} = req.body;
+    const {username, password, email} = req.body;
 
     // chech if email exists
     pool.query(queriesUsers.checkUsernameExists, [username], (err, results) => {
@@ -31,9 +31,14 @@ const addUsers = (req, res) => {
 
         //add users to database
         pool.query(queriesUsers.addUsers,
-            [username, password], (err, results) => {
-                if (err) throw err;
-                return res.status(201).send("User Created Successfully!");
+            [username, password, email], (err, results) => {
+                if (username && password && email){
+                    return res.status(201).send("User Created Successfully!");
+                }
+                else {
+                    return res.send("Please, there's something you haven't filled in yet")
+                }
+                
             })
         });
 };
