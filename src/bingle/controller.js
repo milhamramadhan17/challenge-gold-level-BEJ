@@ -62,6 +62,7 @@ const updateUser = (req, res) => {
     const id = parseInt(req.params.id);
     const {username} = req.body;
     const {password} = req.body;
+    const {email} = req.body;
 
     pool.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
@@ -72,15 +73,25 @@ const updateUser = (req, res) => {
         if (username) {
             pool.query(queriesUsers.updateUser, [username, id], (err, results) => {
                 if (err) throw err;
-                return res.status(200).send("Username updated successfully.");
+                return res.status(201).send("Username updated successfully.");
             }); 
         }
 
         if (password) {
             pool.query(queriesUsers.updatePassword, [password, id], (err) => {
                 if (err) throw err;
-                return res.status(200).send("Password updated successfully.");
+                return res.status(201).send("Password updated successfully.");
             })
+        }
+
+        if (email) {
+            pool.query(queriesUsers.updateEmail, [email, id], (err) => {
+                if (err) throw err;
+                return res.status(201).send("Email updated successfully.");
+            })
+        }
+        else {
+            return res.send("not change happened")
         }
 
     });
