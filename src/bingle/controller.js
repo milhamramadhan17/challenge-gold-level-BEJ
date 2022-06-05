@@ -22,11 +22,10 @@ const getUsersById = (req, res) => {
 
 const addUsers = (req, res) => {
     const {username, password, email} = req.body;
-
     // chech if email exists
-    pool.query(queriesUsers.checkUsernameExists, [username], (err, results) => {
+    pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
         if (results.rows.length) {
-            return res.send('User Login Successfully.');
+            return res.send('Email already exists.');
         }
 
         //add users to database
@@ -42,6 +41,18 @@ const addUsers = (req, res) => {
             })
         });
 };
+
+const login = (req, res) => {
+    const {username, password} = req.body;
+    
+    pool.query(queriesUsers.checkUsernameExists, [username, password], (err, results) => {
+        if (results.rows.length) {
+            return res.send('Login Succesfully'); 
+        } else {
+            return res.send('Username or password are wrong')
+        }
+    })
+}
         
 const removeUser = (req, res) => {
     const id = parseInt(req.params.id);
@@ -267,6 +278,7 @@ const updateOrder = (req, res) => {
 module.exports = {
     getUsers,
     addUsers,
+    login,
     getUsersById,
     updateUser,
     removeUser,
