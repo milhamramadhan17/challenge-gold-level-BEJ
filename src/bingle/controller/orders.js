@@ -22,10 +22,10 @@ const getOrdersById = (req, res) => {
 
 
 const addOrder = (req, res) => {
-    const{id_users, id_items, total_order, total_price} = req.body;
+    const{id_users, id_product, total_order} = req.body;
     
     pool.query(queriesOrders.addOrder,
-        [id_users, id_items, total_order], (err, results) => {
+        [total_order, id_users, id_product], (err, results) => {
         if (err) throw err;
         res.status(201).send("Order Created Successfully!");
         })
@@ -53,23 +53,23 @@ const removeOrder = (req, res) => {
 }
 
 const updateOrder = (req, res) => {
-    const id = parseInt(req.params.id);
-    const {id_items} = req.body;
+    const id_order = parseInt(req.params.id_order);
+    const {id_product} = req.body;
     const {total_order} = req.body;
 
-    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+    pool.query(queriesOrders.getOrdersById, [id_order], (err, results) => {
         const noUserFound = !results.rows.length;
         console.log(noUserFound);
         if(noUserFound) {
             return res.send("Item doest not exist in the database!");
         }
-        if (id_items){
-            pool.query(queriesOrders.updateOrder, [id_items, id], (err, results) => {
+        if (id_product){
+            pool.query(queriesOrders.updateOrder, [id_product, id_order], (err, results) => {
                 if(err) throw err;
                 return res.status(200).send("Order updated successfully :D");
             });
         } else if(total_order){
-            pool.query(queriesOrders.updateOrderValue, [total_order, id], (err, results) => {
+            pool.query(queriesOrders.updateOrderValue, [total_order, id_order], (err, results) => {
                 if(err) throw err;
                 return res.status(200).send("Value order updated successfully :D");
             });
