@@ -12,14 +12,20 @@ const getUsers = (req, res) => {
 
 const getUsersById = (req, res) => {
     const id = parseInt(req.params.id);
+    
+
     pool.query(queriesUsers.getUsersById, [id], (err, results) => {
-        if (err) throw err;
-        return res.status(200).json(results.rows);
+        const noUserFound = !results.rows.length;
+        if(noUserFound){
+            return res.send("User does not exist in the database!");
+        }else{
+            return res.status(200).json(results.rows);
+        }
     });
 };
 
 const addUsers = (req, res) => {
-    const {name, password, email} = req.body;
+    const {name, email, password} = req.body;
     // chech if email exists
     pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
         if (results.rows.length) {
@@ -28,8 +34,8 @@ const addUsers = (req, res) => {
 
         //add users to database
         pool.query(queriesUsers.addUsers,
-            [name, password, email], (err, results) => {
-                if (name && password && email){
+            [name, email, password], (err, results) => {
+                if (name && email && password){
                     return res.status(201).send("User Created Successfully!");
                 }
                 else {

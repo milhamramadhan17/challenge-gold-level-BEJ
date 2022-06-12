@@ -23,12 +23,20 @@ const getOrdersById = (req, res) => {
 
 const addOrder = (req, res) => {
     const{id_users, id_product, total_order} = req.body;
+
+    pool.query(queriesOrders.checkId_ProductNId_UsersExists, [id_users, id_product], (err, results) =>{
+        if(results.rows.length) {
+            pool.query(queriesOrders.addOrder,
+                [total_order, id_users, id_product], (err, results) => {
+                if(err) throw err;
+                return res.status(201).send("Order Created Successfully!");
+                })
+        } else {
+            return res.send("Sry, id_users n id_product are not there are in database")
+        }
+    })
     
-    pool.query(queriesOrders.addOrder,
-        [total_order, id_users, id_product], (err, results) => {
-        if (err) throw err;
-        res.status(201).send("Order Created Successfully!");
-        })
+    
 }
 
 const removeOrder = (req, res) => {
@@ -53,23 +61,23 @@ const removeOrder = (req, res) => {
 }
 
 const updateOrder = (req, res) => {
-    const id_order = parseInt(req.params.id_order);
+    const id = parseInt(req.params.id);
     const {id_product} = req.body;
     const {total_order} = req.body;
 
-    pool.query(queriesOrders.getOrdersById, [id_order], (err, results) => {
+    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
         console.log(noUserFound);
         if(noUserFound) {
             return res.send("Item doest not exist in the database!");
         }
         if (id_product){
-            pool.query(queriesOrders.updateOrder, [id_product, id_order], (err, results) => {
+            pool.query(queriesOrders.updateOrder, [id_product, id], (err, results) => {
                 if(err) throw err;
                 return res.status(200).send("Order updated successfully :D");
             });
         } else if(total_order){
-            pool.query(queriesOrders.updateOrderValue, [total_order, id_order], (err, results) => {
+            pool.query(queriesOrders.updateOrderValue, [total_order, id], (err, results) => {
                 if(err) throw err;
                 return res.status(200).send("Value order updated successfully :D");
             });
