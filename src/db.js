@@ -5,7 +5,7 @@ const pool = new Pool({
     password: 'november2001',
     host: 'localhost',
     port: 5432,
-    database: 'bingle'
+    database: 'bingle_shop'
 });
 
 module.exports = pool;

@@ -1,7 +1,7 @@
 const express = require('express');
-const usersRoutes = require('./src/bingle/route.users');
-const itemsRoutes = require('./src/bingle/route.items');
-const ordersRoutes = require('./src/bingle/route.orders');
+const usersRoutes = require('./src/bingle/route/route.users');
+const itemsRoutes = require('./src/bingle/route/route.items');
+const ordersRoutes = require('./src/bingle/route/route.orders');
 
 const app = express();
 const port = 3000;
@@ -17,7 +17,7 @@ app.use(longger);
 
 app.use(express.json());
 
-app.get("/", (req,res) => {
+app.get("/test", (req,res) => {
     res.send("Hellow World!");
 })
 
