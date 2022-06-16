@@ -1,10 +1,10 @@
-const pool = require('../../db');
+const client = require('../../db');
 const queriesOrders = require('../queries/queries.orders');
 
 
 
 const getOrders = (req, res) => {
-    pool.query(queriesOrders.getOrders, (err, results) => {
+    client.query(queriesOrders.getOrders, (err, results) => {
         if(err) throw err;
         res.status(200).json(results.rows);
 
@@ -13,7 +13,7 @@ const getOrders = (req, res) => {
 
 const getOrdersById = (req, res) => {
     const id = parseInt(req.params.id);
-    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+    client.query(queriesOrders.getOrdersById, [id], (err, results) => {
         if (err) throw err;
         res.status(200).json(results.rows);
     });
@@ -24,9 +24,9 @@ const getOrdersById = (req, res) => {
 const addOrder = (req, res) => {
     const{id_users, id_product, total_order} = req.body;
 
-    pool.query(queriesOrders.checkId_ProductNId_UsersExists, [id_users, id_product], (err, results) =>{
+    client.query(queriesOrders.checkId_ProductNId_UsersExists, [id_users, id_product], (err, results) =>{
         if(results.rows.length) {
-            pool.query(queriesOrders.addOrder,
+            client.query(queriesOrders.addOrder,
                 [total_order, id_users, id_product], (err, results) => {
                 if(err) throw err;
                 return res.status(201).send("Order Created Successfully!");
@@ -42,7 +42,7 @@ const addOrder = (req, res) => {
 const removeOrder = (req, res) => {
     const id = parseInt(req.params.id);
 
-    pool.query(queriesOrders.getOrdersById, [id], (err, results) => {
+    client.query(queriesOrders.getOrdersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
         console.log(noUserFound);
         if(noUserFound) {
@@ -50,7 +50,7 @@ const removeOrder = (req, res) => {
         };
 
         
-        pool.query(queriesOrders.removeOrder,
+        client.query(queriesOrders.removeOrder,
             [id], (err, results) => {
             if (err) throw err; 
             return res.status(203).send("Order removed successfully.");

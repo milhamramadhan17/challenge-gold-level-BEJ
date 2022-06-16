@@ -1,9 +1,9 @@
-const pool = require('../../db');
+const client = require('../../db');
 const queriesUsers = require('../queries/queries.users')
 
 
 const getUsers = (req, res) => {
-    pool.query(queriesUsers.getUsers, (err, results) => {
+    client.query(queriesUsers.getUsers, (err, results) => {
         if(err) throw err;
         return res.status(200).json(results.rows);
 
@@ -14,7 +14,7 @@ const getUsersById = (req, res) => {
     const id = parseInt(req.params.id);
     
 
-    pool.query(queriesUsers.getUsersById, [id], (err, results) => {
+    client.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
         if(noUserFound){
             return res.send("User does not exist in the database!");
@@ -27,13 +27,13 @@ const getUsersById = (req, res) => {
 const addUsers = (req, res) => {
     const {name, email, password} = req.body;
     // chech if email exists
-    pool.query(queriesUsers.checkEmailExists, [email], (err, results) => {
+    client.query(queriesUsers.checkEmailExists, [email], (err, results) => {
         if (results.rows.length) {
             return res.send('Email already exists.');
         }
 
         //add users to database
-        pool.query(queriesUsers.addUsers,
+        client.query(queriesUsers.addUsers,
             [name, email, password], (err, results) => {
                 if (name && email && password){
                     return res.status(201).send("User Created Successfully!");
@@ -49,7 +49,7 @@ const addUsers = (req, res) => {
 const login = (req, res) => {
     const {name, password} = req.body;
     
-    pool.query(queriesUsers.checkNameExists, [name, password], (err, results) => {
+    client.query(queriesUsers.checkNameExists, [name, password], (err, results) => {
         if (results.rows.length) {
             return res.send('Login Succesfully'); 
         } else {
@@ -61,7 +61,7 @@ const login = (req, res) => {
 const removeUser = (req, res) => {
     const id = parseInt(req.params.id);
 
-    pool.query(queriesUsers.getUsersById, [id], (err, results) => {
+    client.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
         console.log(noUserFound);
         if(noUserFound) {
@@ -69,7 +69,7 @@ const removeUser = (req, res) => {
         };
 
         
-        pool.query(queriesUsers.removeUser,
+        client.query(queriesUsers.removeUser,
             [id], (err, results) => {
             if (err) throw err; 
             return res.status(203).send("User removed successfully.");
@@ -84,7 +84,7 @@ const updateUser = (req, res) => {
     const {password} = req.body;
     const {email} = req.body;
 
-    pool.query(queriesUsers.getUsersById, [id], (err, results) => {
+    client.query(queriesUsers.getUsersById, [id], (err, results) => {
         const noUserFound = !results.rows.length;
         if (noUserFound) {
             return res.send("User does not exist in database!");
